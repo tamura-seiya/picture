@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import Photos
+
+var photoAssets = [PHAsset]()
 
 class ViewController: UIViewController {
 
@@ -126,6 +129,24 @@ class ViewController: UIViewController {
         
 
     }
+    
+    func getAllPhotosInfo() {
+        photoAssets = []
+        
+        // 画像をすべて取得
+        var assets: PHFetchResult = PHAsset.fetchAssetsWithMediaType(.Image, options: nil)
+        assets.enumerateObjectsUsingBlock { (asset, index, stop) -> Void in
+            photoAssets.append(asset as! PHAsset)
+        }
+        println("photoAssets = \(photoAssets)")
+        
+        enum PHAssetMediaType : Int {
+            case Image
+            case Video
+            case Audio
+        }
+    }
+
     
     //ここでswipeGestureを定義
     func handleSwipes(sender: UISwipeGestureRecognizer){
