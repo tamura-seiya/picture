@@ -11,12 +11,12 @@ import Photos
 
 var photoAssets = [PHAsset]()
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, MDCSwipeToChooseDelegate {
 
     
     @IBOutlet weak var scrollView: UIScrollView!
     var myLabel:UILabel!
-    var view1:UIView!
+    var view1:UIView!    
     var view2:UIView!
     var view3:UIView!
     var viewAry: [UIView?] = []
@@ -28,9 +28,10 @@ class ViewController: UIViewController {
          //scrollViewを定義
          self.scrollView?.contentSize = CGSizeMake(self.scrollView.frame.width * 3, self.scrollView.frame.size.height)
         
+        //----------------------------------View----------------------------------------------------------
         
         //View1を生成
-        view1 = UIView(frame: CGRectMake(0, 0, self.scrollView.frame.width, self.scrollView.frame.size.height))
+        view1 = UIView()
 
         view1.backgroundColor = UIColor.blueColor()
         
@@ -39,13 +40,14 @@ class ViewController: UIViewController {
         
         
         //View2を生成
-        view2 = UIView(frame: CGRectMake(0, 0, self.scrollView.frame.width, self.scrollView.frame.size.height))
+        view2 = UIView()
         view2.backgroundColor = UIColor.yellowColor()
         
         // 配置する座標を設定する.(中心座標)
         view2.layer.position = CGPoint(x: 375/2,y: 675/2)
         
-        view3 = UIView(frame: CGRectMake(0, 0, self.scrollView.frame.width, self.scrollView.frame.size.height))
+        //view3を形成
+        view3 = UIView()
         
         //background
         view3.backgroundColor = UIColor.blackColor()
@@ -55,7 +57,12 @@ class ViewController: UIViewController {
         
         viewAry = [view1,view2,view3]
 
+        //------------------------------------------------------------------------------------------------
+        
+        //method
         swipeGesture()
+        create()
+
 
         
         //labelを生成
@@ -88,6 +95,8 @@ class ViewController: UIViewController {
         //leftSwipeで足す
         view.addGestureRecognizer(upSwipe)
         view.addGestureRecognizer(downSwipe)
+        
+        
 
     }
 
@@ -122,13 +131,63 @@ class ViewController: UIViewController {
             
             // Scrollviewに追加
             scrollView.addSubview(viewAry[i]!)
-        
-
+        }
+    }
+      //-------------------------------TinderUI-------------------------------------------------------
+        //画像を生成する
+     func create(){
+        var options = MDCSwipeToChooseViewOptions()
+            options.delegate = self
+            options.likedText = "Keep"
+            options.likedColor = UIColor.blueColor()
+            options.nopeText = "Delete"
+            options.onPan = { state -> Void in
+                if state.thresholdRatio == 1 && state.direction == MDCSwipeDirection.Left {
+                    println("Photo deleted!")
+                }
+            }
+            
+            var rect:CGRect = CGRectMake(self.view.bounds.size.width/2 - 120, self.view.bounds.size.height/2 - 150, 240, 300)
+            var view:MDCSwipeToChooseView = MDCSwipeToChooseView(frame: rect, options: options)
+            //        view.imageView.image = UIImage(named: imageName)
+            view.imageView.contentMode = .ScaleAspectFill
+            self.view2.addSubview(view)
         }
         
+        //cancellのときの対応
+        func viewDidCancelSwipe(view: UIView) -> Void{
+            println("Couldn't decide, huh?")
+        }
         
+        //左か右のどちらかに傾き切ったら、どちらを選択したのか確定
+        func view(view: UIView, shouldBeChosenWithDirection: MDCSwipeDirection) -> Bool{
+            if (shouldBeChosenWithDirection == MDCSwipeDirection.Left) {
+                println("Photo deleted!")
 
-    }
+                return true; //NO
+            } else if (shouldBeChosenWithDirection == MDCSwipeDirection.Right){
+                println("Photo saved!")
+
+                return true; //YES
+            } else {
+                // Snap the view back and cancel the choice.
+                UIView.animateWithDuration(0.16, animations: { () -> Void in
+                    view.transform = CGAffineTransformIdentity
+                    view.center = view.superview!.center
+                })
+                return false;
+            }
+        }
+        
+     //左か右、どちらを選択したのか確定したら呼ばれるメソッド
+//        func view(view: UIView, wasChosenWithDirection: MDCSwipeDirection) -> Void{
+//            if wasChosenWithDirection == MDCSwipeDirection.Left {
+//                println("Photo deleted!")
+//            }else{
+//                println("Photo saved!")
+//            }
+//        }
+    //------------------------------------------------------------------------------------------------
     
     func getAllPhotosInfo() {
         photoAssets = []
@@ -159,4 +218,3 @@ class ViewController: UIViewController {
         }
     }
 }
-
