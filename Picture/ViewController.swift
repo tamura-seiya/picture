@@ -8,6 +8,7 @@
 
 import UIKit
 import Photos
+import CoreData
 
 var photoAssets = [PHAsset]()
 
@@ -16,7 +17,7 @@ class ViewController: UIViewController, MDCSwipeToChooseDelegate {
     
     @IBOutlet weak var scrollView: UIScrollView!
     var myLabel:UILabel!
-    var view1:UIView!    
+    var view1:UIView!
     var view2:UIView!
     var view3:UIView!
     var viewAry: [UIView?] = []
@@ -24,7 +25,7 @@ class ViewController: UIViewController, MDCSwipeToChooseDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
+    
          //scrollViewを定義
          self.scrollView?.contentSize = CGSizeMake(self.scrollView.frame.width * 3, self.scrollView.frame.size.height)
         
@@ -57,15 +58,19 @@ class ViewController: UIViewController, MDCSwipeToChooseDelegate {
         
         viewAry = [view1,view2,view3]
 
-        //------------------------------------------------------------------------------------------------
+        //--------------------------------view----------------------------------------------------------
         
-        //method
+        
+        //-----------------------method---------------------------------------------
         swipeGesture()
         create()
+        getAllPhotosInfo()
+        //-----------------------method---------------------------------------------
 
 
         
-        //labelを生成
+        //-------------------------label------------------------------------------------------------------
+
         myLabel = UILabel(frame: CGRectMake(0,0,200,50))
         myLabel.backgroundColor = UIColor.orangeColor()
         myLabel.layer.masksToBounds = true
@@ -82,8 +87,10 @@ class ViewController: UIViewController, MDCSwipeToChooseDelegate {
         self.view.backgroundColor = UIColor.cyanColor()
         //このコードで追加となる
         self.view1.addSubview(myLabel)
+        //-------------------------label------------------------------------------------------------------
         
         
+        //-------------------------swipe------------------------------------------------------------------
         //上へのスワイプを定義
         var upSwipe = UISwipeGestureRecognizer(target: self, action: Selector("handleSwipes:"))
         upSwipe.direction = .Up
@@ -96,9 +103,41 @@ class ViewController: UIViewController, MDCSwipeToChooseDelegate {
         view.addGestureRecognizer(upSwipe)
         view.addGestureRecognizer(downSwipe)
         
+        //-------------------------swipe------------------------------------------------------------------
         
 
     }
+    
+//    func read(){
+//        //Delegateを読み込む
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        
+//        //Entityの操作を制御するmanagedObjectContextをAppdelegateから作成する
+//        if let managedObjectContext = appDelegate.managedObjectContext{
+//            
+//            //Entityを設定
+//            let entityDiscription = NSEntityDescription.entityForName("PhotoData", inManagedObjectContext: managedObjectContext)
+//            
+//            let fetchRequest = NSFetchRequest(entityName: "PhotoData")
+//            fetchRequest.entity = entityDiscription
+//            
+//            //errorが発生した際にキャッチするための変数
+//            var error : NSError? = nil
+//            
+//            //フェッチリクエスト(データの検索と取得処理の実行)
+//            if var results = managedObjectContext.executeFetchRequest(fetchRequest, error: &error){
+//                println(results.count)
+//                
+//                //managedObjectという変数をダウンキャストしてtodoというものを定義している。
+//                //上でresultsを定義している
+//                for managedObject in results{
+//                    let todo = managedObject as! Picture
+////                  println("title: \(tod.title), saveDate:\(todo.sameDate)")
+//                }
+//            }
+//        }
+//    }
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -179,17 +218,9 @@ class ViewController: UIViewController, MDCSwipeToChooseDelegate {
             }
         }
         
-     //左か右、どちらを選択したのか確定したら呼ばれるメソッド
-//        func view(view: UIView, wasChosenWithDirection: MDCSwipeDirection) -> Void{
-//            if wasChosenWithDirection == MDCSwipeDirection.Left {
-//                println("Photo deleted!")
-//            }else{
-//                println("Photo saved!")
-//            }
-//        }
-    //------------------------------------------------------------------------------------------------
+         //-----------------------------------------------------------------------------------------------
     
-    func getAllPhotosInfo() {
+       func getAllPhotosInfo() {
         photoAssets = []
         
         // 画像をすべて取得
@@ -201,8 +232,6 @@ class ViewController: UIViewController, MDCSwipeToChooseDelegate {
         
         enum PHAssetMediaType : Int {
             case Image
-            case Video
-            case Audio
         }
     }
 

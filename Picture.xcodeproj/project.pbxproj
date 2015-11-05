@@ -14,6 +14,7 @@
 		9771E11D1BE73A5000623086 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9771E11C1BE73A5000623086 /* Images.xcassets */; };
 		9771E1201BE73A5000623086 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9771E11E1BE73A5000623086 /* LaunchScreen.xib */; };
 		9771E12C1BE73A5000623086 /* PictureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9771E12B1BE73A5000623086 /* PictureTests.swift */; };
+		97BCF37A1BEB209300E9A6FF /* Picture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BCF3791BEB209300E9A6FF /* Picture.swift */; };
 		D8433894F5FF41BBC5728D32 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 546FFFEBA388FB2D4E9DF3B5 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +44,7 @@
 		9771E12A1BE73A5000623086 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9771E12B1BE73A5000623086 /* PictureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureTests.swift; sourceTree = "<group>"; };
 		97B205A61BE9C9010096278C /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		97BCF3791BEB209300E9A6FF /* Picture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Picture.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 		9771E10F1BE73A4F00623086 /* Picture */ = {
 			isa = PBXGroup;
 			children = (
+				97BCF3791BEB209300E9A6FF /* Picture.swift */,
 				9771E1121BE73A4F00623086 /* AppDelegate.swift */,
 				9771E1171BE73A4F00623086 /* ViewController.swift */,
 				9771E1191BE73A5000623086 /* Main.storyboard */,
@@ -293,6 +296,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97BCF37A1BEB209300E9A6FF /* Picture.swift in Sources */,
 				9771E1181BE73A4F00623086 /* ViewController.swift in Sources */,
 				9771E1161BE73A4F00623086 /* Picture.xcdatamodeld in Sources */,
 				9771E1131BE73A4F00623086 /* AppDelegate.swift in Sources */,
