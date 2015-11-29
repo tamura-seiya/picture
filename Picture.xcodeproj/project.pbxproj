@@ -7,14 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		974F614C1BFB0C4700B18254 /* CustomCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F614B1BFB0C4700B18254 /* CustomCollectionViewCell.swift */; };
 		9771E1131BE73A4F00623086 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9771E1121BE73A4F00623086 /* AppDelegate.swift */; };
-		9771E1161BE73A4F00623086 /* Picture.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9771E1141BE73A4F00623086 /* Picture.xcdatamodeld */; };
 		9771E1181BE73A4F00623086 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9771E1171BE73A4F00623086 /* ViewController.swift */; };
 		9771E11B1BE73A5000623086 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9771E1191BE73A5000623086 /* Main.storyboard */; };
 		9771E11D1BE73A5000623086 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9771E11C1BE73A5000623086 /* Images.xcassets */; };
 		9771E1201BE73A5000623086 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9771E11E1BE73A5000623086 /* LaunchScreen.xib */; };
 		9771E12C1BE73A5000623086 /* PictureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9771E12B1BE73A5000623086 /* PictureTests.swift */; };
-		97BCF37A1BEB209300E9A6FF /* Picture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BCF3791BEB209300E9A6FF /* Picture.swift */; };
+		977E54971C0595F80090A07C /* Picture.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 977E54951C0595F80090A07C /* Picture.xcdatamodeld */; };
+		977E549A1C0596060090A07C /* Albumname+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977E54981C0596060090A07C /* Albumname+CoreDataProperties.swift */; };
+		977E549B1C0596060090A07C /* Albumname.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977E54991C0596060090A07C /* Albumname.swift */; };
+		977E549E1C05963D0090A07C /* Picture+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977E549C1C05963D0090A07C /* Picture+CoreDataProperties.swift */; };
+		977E549F1C05963D0090A07C /* Picture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977E549D1C05963D0090A07C /* Picture.swift */; };
+		97BCF37C1BEB2AC700E9A6FF /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97BCF37B1BEB2AC700E9A6FF /* AssetsLibrary.framework */; };
+		97BCF37E1BEB2AD100E9A6FF /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97BCF37D1BEB2AD100E9A6FF /* Photos.framework */; };
 		D8433894F5FF41BBC5728D32 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 546FFFEBA388FB2D4E9DF3B5 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -32,10 +38,10 @@
 		2989E8CA58F9524EF42C913B /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		546FFFEBA388FB2D4E9DF3B5 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		861BFAA519CA33E719CB3679 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		974F614B1BFB0C4700B18254 /* CustomCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewCell.swift; sourceTree = "<group>"; };
 		9771E10D1BE73A4F00623086 /* Picture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Picture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9771E1111BE73A4F00623086 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9771E1121BE73A4F00623086 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		9771E1151BE73A4F00623086 /* Picture.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Picture.xcdatamodel; sourceTree = "<group>"; };
 		9771E1171BE73A4F00623086 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		9771E11A1BE73A5000623086 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9771E11C1BE73A5000623086 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -43,8 +49,14 @@
 		9771E1251BE73A5000623086 /* PictureTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PictureTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9771E12A1BE73A5000623086 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9771E12B1BE73A5000623086 /* PictureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureTests.swift; sourceTree = "<group>"; };
+		977E54961C0595F80090A07C /* Picture.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Picture.xcdatamodel; sourceTree = "<group>"; };
+		977E54981C0596060090A07C /* Albumname+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Albumname+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		977E54991C0596060090A07C /* Albumname.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Albumname.swift; sourceTree = "<group>"; };
+		977E549C1C05963D0090A07C /* Picture+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Picture+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		977E549D1C05963D0090A07C /* Picture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Picture.swift; sourceTree = "<group>"; };
 		97B205A61BE9C9010096278C /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
-		97BCF3791BEB209300E9A6FF /* Picture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Picture.swift; sourceTree = "<group>"; };
+		97BCF37B1BEB2AC700E9A6FF /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		97BCF37D1BEB2AD100E9A6FF /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +64,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97BCF37E1BEB2AD100E9A6FF /* Photos.framework in Frameworks */,
+				97BCF37C1BEB2AC700E9A6FF /* AssetsLibrary.framework in Frameworks */,
 				D8433894F5FF41BBC5728D32 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,13 +112,17 @@
 		9771E10F1BE73A4F00623086 /* Picture */ = {
 			isa = PBXGroup;
 			children = (
-				97BCF3791BEB209300E9A6FF /* Picture.swift */,
+				977E549C1C05963D0090A07C /* Picture+CoreDataProperties.swift */,
+				977E549D1C05963D0090A07C /* Picture.swift */,
+				977E54981C0596060090A07C /* Albumname+CoreDataProperties.swift */,
+				977E54991C0596060090A07C /* Albumname.swift */,
 				9771E1121BE73A4F00623086 /* AppDelegate.swift */,
 				9771E1171BE73A4F00623086 /* ViewController.swift */,
 				9771E1191BE73A5000623086 /* Main.storyboard */,
 				9771E11C1BE73A5000623086 /* Images.xcassets */,
 				9771E11E1BE73A5000623086 /* LaunchScreen.xib */,
-				9771E1141BE73A4F00623086 /* Picture.xcdatamodeld */,
+				974F614B1BFB0C4700B18254 /* CustomCollectionViewCell.swift */,
+				977E54951C0595F80090A07C /* Picture.xcdatamodeld */,
 				9771E1101BE73A4F00623086 /* Supporting Files */,
 			);
 			path = Picture;
@@ -139,6 +157,8 @@
 		DFD34D49A81FA5DACD7CF118 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				97BCF37D1BEB2AD100E9A6FF /* Photos.framework */,
+				97BCF37B1BEB2AC700E9A6FF /* AssetsLibrary.framework */,
 				546FFFEBA388FB2D4E9DF3B5 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -191,6 +211,7 @@
 		9771E1051BE73A4F00623086 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = "Seiya Tamura";
@@ -296,9 +317,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				97BCF37A1BEB209300E9A6FF /* Picture.swift in Sources */,
+				977E549E1C05963D0090A07C /* Picture+CoreDataProperties.swift in Sources */,
+				977E549B1C0596060090A07C /* Albumname.swift in Sources */,
+				977E549A1C0596060090A07C /* Albumname+CoreDataProperties.swift in Sources */,
+				977E54971C0595F80090A07C /* Picture.xcdatamodeld in Sources */,
+				977E549F1C05963D0090A07C /* Picture.swift in Sources */,
+				974F614C1BFB0C4700B18254 /* CustomCollectionViewCell.swift in Sources */,
 				9771E1181BE73A4F00623086 /* ViewController.swift in Sources */,
-				9771E1161BE73A4F00623086 /* Picture.xcdatamodeld in Sources */,
 				9771E1131BE73A4F00623086 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -515,12 +540,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		9771E1141BE73A4F00623086 /* Picture.xcdatamodeld */ = {
+		977E54951C0595F80090A07C /* Picture.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				9771E1151BE73A4F00623086 /* Picture.xcdatamodel */,
+				977E54961C0595F80090A07C /* Picture.xcdatamodel */,
 			);
-			currentVersion = 9771E1151BE73A4F00623086 /* Picture.xcdatamodel */;
+			currentVersion = 977E54961C0595F80090A07C /* Picture.xcdatamodel */;
 			path = Picture.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

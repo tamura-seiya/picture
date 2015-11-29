@@ -1,5 +1,5 @@
 //
-//  Picture.swift
+//  Albumname.swift
 //  Picture
 //
 //  Created by tamura seiya on 2015/11/25.
@@ -9,8 +9,8 @@
 import Foundation
 import CoreData
 
-@objc(Picture)
-class Picture: NSManagedObject {
+
+class Albumname: NSManagedObject {
 
 // Insert code here to add functionality to your managed object subclass
 
