@@ -9,6 +9,7 @@
 import UIKit
 import Photos
 import CoreData
+import iAd
 
 
 class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSource, MDCSwipeToChooseDelegate{
@@ -30,14 +31,11 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     var howToImage2 = UIImage(named:"seiya's Application.002.jpg")
     var howToImage3 = UIImage(named:"seiya's Application.003.jpg")
     var howToImage4 = UIImage(named:"seiya's Application.004.jpg")
-    
+    var howToImage5 = UIImage(named:"seiya's Application.005.jpg")
+   
     var timer : NSTimer! //How to 画面のタイマー作成
     var cnt : Float = 0
     var howToImageView:SpringImageView!
-    
-//    var backgroundImage5 = UIImage(named:"pastel.jpg")
-//    var backgroundImage6 = UIImage(named:"sky.jpg")
-//    var backgroundImage7 = UIImage(named:"monocroCroc.jpg")
     
     var myCollectionView : UICollectionView!
     
@@ -80,8 +78,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-       
-        
+    
          //scrollViewを定義
          self.scrollView?.contentSize = CGSizeMake(self.view.frame.width * 3, self.view.frame.size.height)
         
@@ -123,18 +120,16 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         //ボタンを配置
         
+//        
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        
+//        let flag:Bool = appDelegate.firstRun()
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        var mydefaults = NSUserDefaults.standardUserDefaults()
         
-        let flag:Bool = appDelegate.firstRun()
-        
-        if flag{
+        if (mydefaults.objectForKey("first") != nil){
             
-            makeButton() //初回起動時のみのボタン配置
             print("1回目")
-            
-        }else{
-            print("2回目")
             secondButton() //2回目以降のview1作成ボタン
             read()        //CoreDataを読み込む
             readAlbum()   //Albumの名前を呼ぶ
@@ -143,7 +138,10 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             create() //TinderUIに画像を設置　====完了
             makeColectionViewBtn() //アルバムを表示するボタン作成
             
-//            myCollectionView.reloadData()
+        }else{
+            
+            print("2回目")
+            makeButton() //初回起動時のみのボタン配置
             
         }
         
@@ -151,32 +149,6 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
 
         //-----------------------method---------------------------------------------
         
-        
-
-        
-        
-        //-------------------------label------------------------------------------------------------------
-//
-//        myLabel = UILabel(frame: CGRectMake(0,0,200,50))
-//        myLabel.backgroundColor = UIColor.orangeColor()
-//        myLabel.layer.masksToBounds = true
-//        myLabel.layer.cornerRadius = 20.0
-//        myLabel.text = "Hello Swift!!"
-//        myLabel.textColor = UIColor.whiteColor()
-//        myLabel.shadowColor = UIColor.grayColor()
-//        myLabel.textAlignment = NSTextAlignment.Center
-//        
-//        // 座標設定
-//        myLabel.layer.position = CGPoint(x: self.view.bounds.width/2,y: 200)
-//        
-//        // Viewの背景色を青にする.
-//        self.view.backgroundColor = UIColor.cyanColor()
-//        //このコードで追加となる
-//        self.view1.addSubview(myLabel)
-        //-------------------------label------------------------------------------------------------------
-        
-    
-        //-------------------------Button----------------------------------------------------------
         
         
         ///////////////////////ボタン2///////////////////////////////////////////////
@@ -200,10 +172,8 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         myButton3.setTitle("ボタン(押された時)", forState: UIControlState.Highlighted)
         myButton3.setTitleColor(UIColor.blackColor(), forState: UIControlState.Highlighted)
         
-//        // コーナーの半径を設定する.
-//        myButton3.layer.cornerRadius = 20.0
-        
-        myButton3.layer.position = CGPoint(x: self.view2.frame.width/2, y:500)
+//        myButton3.layer.position = CGPoint(x: self.view2.frame.width/2, y:500)
+        myButton3.layer.position = CGPoint(x: self.view2.frame.width/2, y:150)
         
         // タグを設定する.
         myButton3.tag = 3
@@ -214,10 +184,13 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         // ボタンをViewに追加する.
         self.view2.addSubview(myButton3)
         
-        if flag{
-         myButton3.hidden = true
+        
+
+        if (mydefaults.objectForKey("first") != nil){
+        myButton3.hidden = false
         }else{
-         myButton3.hidden = false
+         myButton3.hidden = true
+         print("secondRun")
         }
         
         
@@ -256,20 +229,21 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         // ボタンをViewに追加する.
         self.view2.addSubview(myButton2)
     /////////////////////////////////////////////////////////////////////////////////////////
-        //上へのスワイプを定義
-        let upSwipe = UISwipeGestureRecognizer(target: self, action: Selector("handleSwipes:"))
-        upSwipe.direction = .Up
-        
-        //下へのスワイプを定義
-        let downSwipe = UISwipeGestureRecognizer(target: self, action: Selector("handleSwipes:"))
-        downSwipe.direction = .Down
-        
-        //leftSwipeで足す
-        view.addGestureRecognizer(upSwipe)
-        view.addGestureRecognizer(downSwipe)
-        
+//        //上へのスワイプを定義
+//        let upSwipe = UISwipeGestureRecognizer(target: self, action: Selector("handleSwipes:"))
+//        upSwipe.direction = .Up
+//        
+//        //下へのスワイプを定義
+//        let downSwipe = UISwipeGestureRecognizer(target: self, action: Selector("handleSwipes:"))
+//        downSwipe.direction = .Down
+//        
+//        //leftSwipeで足す
+//        view.addGestureRecognizer(upSwipe)
+//        view.addGestureRecognizer(downSwipe)
+//        
         //-------------------------swipe------------------------------------------------------------------
         
+                
     }
 
     override func didReceiveMemoryWarning() {
@@ -279,7 +253,25 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     
     //=========================Photo=================================================================
     
+    func firstRun() -> Bool {
+        //UserDefaults
+        var mydefaults = NSUserDefaults.standardUserDefaults()
+        
+        if (mydefaults.objectForKey("first") != nil){
+            return false
+        }
+        
+        mydefaults.setObject("flag", forKey: "first")
+        
+        mydefaults.synchronize()
+        
+        return true
+    }
+
+    
     func getAllPhoto(sender:UIButton){
+        
+        firstRun()
         
         makeIndicator() //インジケータ表示がされない
         print("before")
@@ -311,19 +303,10 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
                  self.myActivityIndicator.hidden = true
                  self.fvLabel1.text = "Loading Success \n Push Start"
                  self.fvLabel1.numberOfLines = 2
-                
-//                
-//                for ( var i = 0; i < self.labelAry.count ; i++ ) {
-//                    //How toのページを消せるようにする
-//                    self.labelAry[i].hidden = true
-//                }
-//
             }
             
 ///////////////////////////////////////////////////////////////////////////////////////////////////
         })
-        
-        
         
         self.scrollView.contentOffset = CGPointMake(view1.frame.size.width * 2, 0); //scrollViewの位置をずらす
         
@@ -565,9 +548,9 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         for (var i = 0;i < hennsuu; i++){
             let options = MDCSwipeToChooseViewOptions()
             options.delegate = self
-            options.likedText = "Keep"
+            options.likedText = rightSelectPicker //右にスワイプした時に、テキストをを表示
             options.likedColor = UIColor.blueColor()
-            options.nopeText = "Delete"
+            options.nopeText = leftSelectPicker //左にスワイプした時に、テキスト表示
             options.onPan = { state -> Void in
                 if state.thresholdRatio == 1 && state.direction == MDCSwipeDirection.Left {
                     print("Photo deleted!")
@@ -723,62 +706,109 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     //=========================Collection=============================================================
 
     
-    //ここでswipeGestureを定義
-    func handleSwipes(sender: UISwipeGestureRecognizer){
-        if (sender.direction == .Up){
-            myLabel.text = "aa"
-        }else if (sender.direction == .Down){
-            myLabel.text = "bb"
-        }else{
-            myLabel.text = "cc"
-        }
-    }
-    
     //==================AlertView=============================================================
     func onClickMyButton(sender: UIButton) {
        
+       
+//        if myButton3.hidden != true{
+//           myButton3.hidden = true
+//           alertMaking()
+//           print("Button")
+//        }else if myUIPicker.hidden != true && myUIPicker2.hidden != true{
+//           myUIPicker.hidden = true
+//           myUIPicker2.hidden = true
+//           alertMaking()
+//           print("UIPIcker")
+//        }else{
+//           alertMaking()
+//          print("else")
+//        }
+                
+//        //MyButtonと同じ作業をして、表示させる
+//        if myButton3.hidden || myUIPicker.hidden || myUIPicker2.hidden{
+//           alertMaking()
+//          print("1回目")
+//        }else{
+//          myButton3.hidden = true
+//          myUIPicker.hidden = true
+//          myUIPicker2.hidden = true
+//          alertMaking()
+//          print("2回目")
+//        }
         
-    // Alert生成.
-    let myAlert: UIAlertController = UIAlertController(title: "新しくアルバムを追加する", message: "Album Name", preferredStyle: UIAlertControllerStyle.Alert)
+        
+        alertMaking()
+    }
     
-    // OKアクション生成.
-    let OkAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (action: UIAlertAction!) -> Void in
-        for albumname in myAlert.textFields!{
-             let text = albumname.text
-             self.albumTinderAlbum(text!) //tinderalbumに画像を抽出
-            print("text =  \(text)")
-           
-            //pickerButtonを追加
+    func alertMaking(){
+    
+        
+        // Alert生成.
+        let myAlert: UIAlertController = UIAlertController(title: "新しくアルバムを追加する", message: "Album Name", preferredStyle: UIAlertControllerStyle.Alert)
+        
+        // OKアクション生成.
+        let OkAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (action: UIAlertAction!) -> Void in
+            
+            for albumname in myAlert.textFields!{
+                print("albumname = \(albumname)")
+                let text = albumname.text
+                
+                if (text == "" ){
+                    
+                    self.myButton3.hidden = false
+                    
+                    let myAlert: UIAlertController = UIAlertController(title: "アルバム名を入力してください", message: "必須項目です", preferredStyle: .Alert)
+                    
+                    // OKのアクションを作成する.
+                    let myOkAction = UIAlertAction(title: "OK", style: .Default) { action in
+                        print("Action OK!!")
+                    }
+                    
+                    // OKのActionを追加する.
+                    myAlert.addAction(myOkAction)
+                    
+                    // UIAlertを発動する.
+                    self.presentViewController(myAlert, animated: true, completion: nil) //アルバムを入力して、何もなかった時に、Alertを表示する
+                    self.myButton3.hidden = true
+                    
+                    
+                }else{
+                    
+                    self.albumTinderAlbum(text!) //tinderalbumに画像を抽出
+                    print("text =  \(text)")
+                    self.myButton3.hidden = false
+                    
+                }
+            }
+            
         }
-    print("OK")
-    }
-    
-    // Cancelアクション生成.
-    let CancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Destructive) { (action: UIAlertAction!) -> Void in
-    print("Cancel")
+        // Cancelアクション生成.
+        let CancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Destructive) { (action: UIAlertAction!) -> Void in
+            print("Cancel")
+            
+            self.view2.addSubview(self.myButton3)
+        }
         
-    self.view2.addSubview(self.myButton3)
-    }
-    
-    // AlertにTextFieldを追加.
-    myAlert.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
-    
-    
-    // NotificationCenterを生成.
-    let myNotificationCenter = NSNotificationCenter.defaultCenter()
-    
-    // textFieldに変更があればchangeTextFieldメソッドに通知.
-    myNotificationCenter.addObserver(self, selector: "changeTextField:", name: UITextFieldTextDidChangeNotification, object: nil)
-    }
-    
-    // Alertにアクションを追加.
-    myAlert.addAction(OkAction)
-    myAlert.addAction(CancelAction)
-    
-    // Alertを発動.
-    presentViewController(myAlert, animated: true, completion: nil)
-//    myUIPicker.hidden = true
-//    myButton3.hidden = false ////画像の調整
+        // AlertにTextFieldを追加.
+        myAlert.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
+            
+            
+            // NotificationCenterを生成.
+            let myNotificationCenter = NSNotificationCenter.defaultCenter()
+            
+            // textFieldに変更があればchangeTextFieldメソッドに通知.
+            myNotificationCenter.addObserver(self, selector: "changeTextField:", name: UITextFieldTextDidChangeNotification, object: nil)
+        }
+        
+        // Alertにアクションを追加.
+        myAlert.addAction(OkAction)
+        myAlert.addAction(CancelAction)
+        
+        // Alertを発動.
+        presentViewController(myAlert, animated: true, completion: nil)
+        //    myUIPicker.hidden = true
+        //    myButton3.hidden = false ////画像の調整
+
     }
     
     /*
@@ -821,7 +851,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             for managedObject in results{
                 
                 let album = managedObject as! Albumname
-                ////////////MyValuesを足して、計算/////////////////////////////////////////////////////////////////////////////////////////////////
+               
                 myValues.append(album.createAlbum!)
                 print("myValues = \(myValues)")
                 print("albumName: \(album.createAlbum)") //albumname 取得
@@ -833,8 +863,8 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     }
     
     func albumTinderAlbum(text:String){
-        //アルバムネームを保存
         
+        //アルバムネームを保存
         //delegateからデータを呼び込むための、定義(get the discription entity name)
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
@@ -1152,7 +1182,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         svcBtn.tag = 3
         
         // イベントを追加する.
-        svcBtn.addTarget(self, action: "segueHowto:", forControlEvents: .TouchUpInside)
+        svcBtn.addTarget(self, action: "pushSecondView:", forControlEvents: .TouchUpInside)
         
         // ボタンをViewに追加する.
         self.view1.addSubview(svcBtn)
@@ -1162,7 +1192,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         myLabel.textAlignment = NSTextAlignment.Center
         myLabel.font = UIFont(name: "ChalkboardSE-Light", size: 30)!
-        myLabel.text = "How to"
+        myLabel.text = "Album"
         myLabel.textColor = UIColor.blackColor()
         
         
@@ -1216,9 +1246,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         
     }
-
-    
-        func makeIndicator(){
+            func makeIndicator(){
         //ボタンを配置
         print("makeingicator")
         //getAllphotoに含まれる
@@ -1244,17 +1272,6 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         // インジケータをViewに追加する.
         self.view3.addSubview(myActivityIndicator)
-        
-            
-//            var myLabel:UILabel!
-//            var myLabel2:UILabel!
-//            var myLabel3:UILabel!
-//            labelAry.append(myLabel)
-//            labelAry.append(myLabel2)
-//            labelAry.append(myLabel3)
-            
-            
-            
 
         }
     
@@ -1309,7 +1326,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     }
     
     func onUpdate(sender:NSTimer){
-        
+        //タイマーの時の処理
         cnt += 1
     
         if cnt == 1{
@@ -1330,11 +1347,20 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             howToImageView.curve = "easeIn"
             howToImageView.duration = 1.5
             howToImageView.animate()
-            timer.invalidate()
+            
         }else if cnt == 4{
+            howToImageView.image = howToImage5
+            howToImageView.animation = "squeezeDown"
+            howToImageView.curve = "easeIn"
+            howToImageView.duration = 1.5
+            howToImageView.animate()
+        }else if cnt == 5{
             self.scrollView.contentOffset = CGPointMake(0, 0); //scrollViewの位置を初期画面に戻す
+            timer.invalidate()
+            vcBtn.enabled = false
+            print("タイマーを止める")
         }else{
-          print(cnt)
+        
         }
         
         

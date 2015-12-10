@@ -8,7 +8,7 @@
         <!--View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="Picture" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="viewController" id="vXZ-lx-hvc" customClass="ViewController" customModule="Picture" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="2ra-Be-cYG"/>
                         <viewControllerLayoutGuide type="bottom" id="Ivz-fk-wyw"/>
@@ -34,7 +34,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="111" y="280"/>
+            <point key="canvasLocation" x="-55" y="280"/>
         </scene>
         <!--Second View Controller-->
         <scene sceneID="JDX-7E-YVh">
@@ -54,7 +54,7 @@
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="xgw-X1-mIt">
                                 <rect key="frame" x="16" y="7" width="83" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Back"/>
+                                <state key="normal" title="&gt;"/>
                                 <connections>
                                     <action selector="tapBtn:" destination="McU-xS-0DI" eventType="touchUpInside" id="dn4-6N-MtJ"/>
                                 </connections>

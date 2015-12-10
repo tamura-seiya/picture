@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import iAd
 
 class SecondViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
@@ -47,8 +48,9 @@ class SecondViewController: UIViewController, UICollectionViewDelegate, UICollec
                 print("myCollectionView")
                 
             self.view.addSubview(myCollectionView)
-
         
+            self.canDisplayBannerAds = true //iAdを出力
+
     }
     
     @IBAction func tapBtn(sender: AnyObject) {
