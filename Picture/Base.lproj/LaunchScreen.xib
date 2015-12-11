@@ -17,34 +17,23 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="images.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="WZR-wr-99s">
-                    <rect key="frame" x="0.0" y="337" width="320" height="182"/>
-                </imageView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Picture" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="kId-c2-rCX">
                     <rect key="frame" x="20" y="169" width="281" height="43"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="images.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="m2c-i5-QRM">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="images.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="m2c-i5-QRM">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="168"/>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="images.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="pPz-wQ-Amq">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="images.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="pPz-wQ-Amq">
                     <rect key="frame" x="0.0" y="164" width="320" height="173"/>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="images.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="WZR-wr-99s">
+                    <rect key="frame" x="0.0" y="337" width="320" height="182"/>
                 </imageView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-            <constraints>
-                <constraint firstAttribute="trailing" secondItem="WZR-wr-99s" secondAttribute="trailing" id="2n8-vG-0Pt"/>
-                <constraint firstAttribute="trailing" secondItem="pPz-wQ-Amq" secondAttribute="trailing" id="67v-9i-he1"/>
-                <constraint firstItem="m2c-i5-QRM" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="6If-WF-fh9"/>
-                <constraint firstItem="WZR-wr-99s" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="7Jf-b3-YJq"/>
-                <constraint firstItem="WZR-wr-99s" firstAttribute="top" secondItem="pPz-wQ-Amq" secondAttribute="bottom" id="UUQ-Xl-YpO"/>
-                <constraint firstAttribute="trailing" secondItem="m2c-i5-QRM" secondAttribute="trailing" id="WbU-sf-dHC"/>
-                <constraint firstItem="m2c-i5-QRM" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Z4n-db-nxS"/>
-                <constraint firstItem="pPz-wQ-Amq" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="164" id="jKI-TZ-JS4"/>
-                <constraint firstItem="pPz-wQ-Amq" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="rqo-3a-3rL"/>
-            </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
             <point key="canvasLocation" x="515" y="453"/>

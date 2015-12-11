@@ -129,7 +129,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         if (mydefaults.objectForKey("first") != nil){
             
-            print("1回目")
+            print("2回目")
             secondButton() //2回目以降のview1作成ボタン
             read()        //CoreDataを読み込む
             readAlbum()   //Albumの名前を呼ぶ
@@ -140,9 +140,9 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             
         }else{
             
-            print("2回目")
+            print("1回目")
             makeButton() //初回起動時のみのボタン配置
-            
+        
         }
         
         
@@ -172,8 +172,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         myButton3.setTitle("ボタン(押された時)", forState: UIControlState.Highlighted)
         myButton3.setTitleColor(UIColor.blackColor(), forState: UIControlState.Highlighted)
         
-//        myButton3.layer.position = CGPoint(x: self.view2.frame.width/2, y:500)
-        myButton3.layer.position = CGPoint(x: self.view2.frame.width/2, y:150)
+        myButton3.layer.position = CGPoint(x: self.view2.frame.width/2, y:self.view2.frame.height - 70)
         
         // タグを設定する.
         myButton3.tag = 3
@@ -214,10 +213,10 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         myButton2.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         
         // タイトルを設定する(ボタンがハイライトされた時).
-        myButton2.setTitle("ボタン(押された時)", forState: UIControlState.Highlighted)
+        
         myButton2.setTitleColor(UIColor.blackColor(), forState: UIControlState.Highlighted)
         
-        myButton2.layer.position = CGPoint(x: self.view2.frame.width/2, y:70)
+        myButton2.layer.position = CGPoint(x: self.view2.frame.width / 2, y:self.view2.frame.width / 6) //70
         
         
         // タグを設定する.
@@ -303,6 +302,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
                  self.myActivityIndicator.hidden = true
                  self.fvLabel1.text = "Loading Success \n Push Start"
                  self.fvLabel1.numberOfLines = 2
+                 self.scrollView.contentOffset = CGPointMake(0, 0);
             }
             
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1285,6 +1285,8 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         imageViewAppear() // photoArrayグローバル変数に値が指定した繰り返しの数入る
         create() //TinderUIに画像を設置　====完了
         makeColectionViewBtn() //アルバムを表示するボタン作成
+        self.howToImageView.hidden = true // trueにする
+        
     }
     
     func upload(sender:UIButton){
@@ -1355,7 +1357,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             howToImageView.duration = 1.5
             howToImageView.animate()
         }else if cnt == 5{
-            self.scrollView.contentOffset = CGPointMake(0, 0); //scrollViewの位置を初期画面に戻す
+//            self.scrollView.contentOffset = CGPointMake(0, 0); //scrollViewの位置を初期画面に戻す
             timer.invalidate()
             vcBtn.enabled = false
             print("タイマーを止める")
