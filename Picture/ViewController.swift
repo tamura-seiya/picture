@@ -36,6 +36,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     var timer : NSTimer! //How to 画面のタイマー作成
     var cnt : Float = 0
     var howToImageView:SpringImageView!
+
     
     var myCollectionView : UICollectionView!
     
@@ -45,6 +46,12 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     var photoImage:UIImage!
     var photoURL:[String] = []
     var photoKeys:String! //PhotoKeys
+    
+    var imageUrlAry:[String] = []
+    var imageTagAry:[Int] = [] //Int型のタグの配列
+    var tagCount = -1 //タグを何回カウントされたか数えるための変数
+    var personInfo:[Int:String] = [:]
+    
     var numberPhoto:Int!
     var count1 = 0 //PHAssetURLの画像の変数
     var count2 = 0
@@ -83,7 +90,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
          self.scrollView?.contentSize = CGSizeMake(self.view.frame.width * 3, self.view.frame.size.height)
         
         
-        //----------------------------------View----------------------------------------------------------
+        //----------------------View----------------------------------------------------------
         
         //View1を生成
         view1 = UIView()
@@ -105,7 +112,8 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         //view3を形成
         view3 = UIView()
         
-        //background
+        //backgroundresulsデータの数
+
         view3.backgroundColor = UIColor.clearColor()
         view3.backgroundColor = UIColor(patternImage: backgroundImage3!)
         
@@ -120,23 +128,19 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         //ボタンを配置
         
-//        
-//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//        
-//        let flag:Bool = appDelegate.firstRun()
-        
         var mydefaults = NSUserDefaults.standardUserDefaults()
         
         if (mydefaults.objectForKey("first") != nil){
             
             print("2回目")
             secondButton() //2回目以降のview1作成ボタン
-            read()        //CoreDataを読み込む
             readAlbum()   //Albumの名前を呼ぶ
-            imageImport() //Photosの配列に URLを入れる
+            newImageImport()
+//            imageImport() //Photosの配列に URLを入れる
             imageViewAppear() // photoArrayグローバル変数に値が指定した繰り返しの数入る
             create() //TinderUIに画像を設置　====完了
             makeColectionViewBtn() //アルバムを表示するボタン作成
+            makePicker()
             
         }else{
             
@@ -144,58 +148,8 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             makeButton() //初回起動時のみのボタン配置
         
         }
-        
-        
 
         //-----------------------method---------------------------------------------
-        
-        
-        
-        ///////////////////////ボタン2///////////////////////////////////////////////
-        // Buttonを生成する.
-        myButton3 = UIButton()
-        
-        // サイズを設定する.
-        myButton3.frame = CGRectMake(0,0,200,40)
-        
-        // 背景色を設定する.
-        myButton3.backgroundColor = UIColor.whiteColor()
-        
-        // 枠を丸くする.
-        myButton3.layer.masksToBounds = true
-        
-        // タイトルを設定する(通常時).
-        myButton3.setTitle("Album Pass", forState: UIControlState.Normal)
-        myButton3.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
-        
-        // タイトルを設定する(ボタンがハイライトされた時).
-        myButton3.setTitle("ボタン(押された時)", forState: UIControlState.Highlighted)
-        myButton3.setTitleColor(UIColor.blackColor(), forState: UIControlState.Highlighted)
-        
-        myButton3.layer.position = CGPoint(x: self.view2.frame.width/2, y:self.view2.frame.height - 70)
-        
-        // タグを設定する.
-        myButton3.tag = 3
-        
-        // イベントを追加する.
-        myButton3.addTarget(self, action: "onClickOption:", forControlEvents: .TouchUpInside)
-        
-        // ボタンをViewに追加する.
-        self.view2.addSubview(myButton3)
-        
-        
-
-        if (mydefaults.objectForKey("first") != nil){
-        myButton3.hidden = false
-        }else{
-         myButton3.hidden = true
-         print("secondRun")
-        }
-        
-        
-       
-        
-        //-------------------------swipe------------------------------------------------------------------
         
         myButton2 = UIButton()
         
@@ -218,7 +172,6 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         myButton2.layer.position = CGPoint(x: self.view2.frame.width / 2, y:self.view2.frame.width / 6) //70
         
-        
         // タグを設定する.
         myButton2.tag = 2
         
@@ -228,21 +181,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         // ボタンをViewに追加する.
         self.view2.addSubview(myButton2)
     /////////////////////////////////////////////////////////////////////////////////////////
-//        //上へのスワイプを定義
-//        let upSwipe = UISwipeGestureRecognizer(target: self, action: Selector("handleSwipes:"))
-//        upSwipe.direction = .Up
-//        
-//        //下へのスワイプを定義
-//        let downSwipe = UISwipeGestureRecognizer(target: self, action: Selector("handleSwipes:"))
-//        downSwipe.direction = .Down
-//        
-//        //leftSwipeで足す
-//        view.addGestureRecognizer(upSwipe)
-//        view.addGestureRecognizer(downSwipe)
-//        
-        //-------------------------swipe------------------------------------------------------------------
-        
-                
+    
     }
 
     override func didReceiveMemoryWarning() {
@@ -250,9 +189,10 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         // Dispose of any resources that can be recreated.
     }
     
-    //=========================Photo=================================================================
+    //=========================Photo=================================================
     
     func firstRun() -> Bool {
+        
         //UserDefaults
         var mydefaults = NSUserDefaults.standardUserDefaults()
         
@@ -300,8 +240,8 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
                 
                  self.vcBtn2.enabled = true //ボタンを触れるようにする
                  self.myActivityIndicator.hidden = true
-                 self.fvLabel1.text = "Loading Success \n Push Start"
-                 self.fvLabel1.numberOfLines = 2
+                 self.fvLabel1.text = "Loading Success \n Push Start" //開業する
+                 self.fvLabel1.numberOfLines = 2 //Labelの数を指定する
                  self.scrollView.contentOffset = CGPointMake(0, 0);
             }
             
@@ -316,11 +256,9 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
        
         howToImageView.image = howToImage
         
-        
         self.view3.addSubview(howToImageView)
         
         view3.bringSubviewToFront(myActivityIndicator) //indicatorを一番前に出す
-
         
         howToImageView.animation = "squeezeDown"
         howToImageView.curve = "easeIn"
@@ -349,167 +287,274 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             picture.cameraroll = strUrl
         
             appDelegate.saveContext()
+        
+    }
+
+    func newImageImport(){
+        
+        //画像をString型に変換して、保存したパスをPhotos配列（PHAsset）に落としこむ
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        
+        //Entityの操作を制御するmanagedObjectContextをAppdelegateから作成する
+        let managedObjectContext = appDelegate.managedObjectContext
+        
+        //Entityを設定する設定
+        let entityDiscription = NSEntityDescription.entityForName("Picture", inManagedObjectContext: managedObjectContext)
+        
+        
+        let fetchRequest = NSFetchRequest(entityName: "Picture")
+        fetchRequest.entity = entityDiscription
+        
+        
+        do{
+            
+            let fetchResults = try managedObjectContext.executeFetchRequest(fetchRequest) as? [NSManagedObject]
+            
+            
+            //非同期で、10件から30件の画像を表示
+//            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+//                
+//                for(var i=10 ;i<30; i++){
+//                    
+//                    let picture = fetchResults![i] as! Picture //fetchResultsの中を10件回す
+//                    //                let picture = managedObject as! Picture
+//                    
+//                    //画像を表示させる
+//                    let filePath: String = picture.cameraroll!
+//                    print(filePath)
+//                    let fileUrl = NSURL(string:filePath)
+//                    
+//                    
+//                    var imageRequestOptions = PHImageRequestOptions()
+//                    imageRequestOptions.version = .Current
+//                    imageRequestOptions.deliveryMode = .FastFormat
+//                    imageRequestOptions.resizeMode = .Fast
+//                    imageRequestOptions.synchronous = true
+//                    
+//                    let fetchResult = PHAsset.fetchAssetsWithOptions(nil)
+//                    print("fetchResult = \(fetchResult)")
+//                    
+//                    //////////////数を呼び込まれる回数に対して、同時に上がっていかないと、画像が変化しない
+//                    
+//                    self.photos.append(fetchResult[i] as! PHAsset)
+//                    //fetchResultsの中の数の中を回す
+//                    //                print("photos = \(photos) + \(count1)")
+//                    
+//                    //        print("photos = \(photos)")
+//                    //        print("photos.count = \(photos.count)")
+//                    //
+//                    //        print("fetchResult.count = \(fetchResult.count)")
+//                    
+//                    
+//                    //PHAssetUrl取得
+//                    //                PHAssetForFileURL(fileUrl!)
+//                    
+//                    appDelegate.saveContext()
+//                }
+//
+//            })
+//
+           var count = 0
+            
+//            var imageRequestOptions = PHImageRequestOptions()
+//            imageRequestOptions.version = .Current
+//            imageRequestOptions.deliveryMode = .FastFormat
+//            imageRequestOptions.resizeMode = .Fast
+//            imageRequestOptions.synchronous = true
+            
+            let fetchResult = PHAsset.fetchAssetsWithOptions(nil)
+            print("fetchResult = \(fetchResult)")
+
+            for(var i=0 ;i<10; i++){
+                
+                count++
+
+                let picture = fetchResults![i] as! Picture //fetchResultsの中を10件回す
+                print("\(count) picture[fetchResults] = \(picture)")
+                //画像を表示させる
+                let filePath: String = picture.cameraroll!
+                print(filePath)
+                let fileUrl = NSURL(string:filePath)
+                var imageData = PHAssetForFileURL(fileUrl!)
+                
+                photos.append(imageData!)
+                
+            }
+
+        }catch{
+            print("could not catch")
         }
-    
-    //Coredataを読み込む
-    func read(){
-        //Delegateを読み込む
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        
-        //Entityの操作を制御するmanagedObjectContextをAppdelegateから作成する
-            let managedObjectContext = appDelegate.managedObjectContext
-            
-            //Entityを設定
-            
-            let entityDiscription = NSEntityDescription.entityForName("Picture", inManagedObjectContext: managedObjectContext)
-            
-            let fetchRequest = NSFetchRequest(entityName: "Picture")
-            fetchRequest.entity = entityDiscription
-            
-            //errorが発生した際にキャッチするための変数
-            var error : NSError? = nil
-            
-            //フェッチリクエスト(データの検索と取得処理の実行)
-            do {
-                //Pictureの中の画像の数を抽出
-                //resultsという配列に格納
-                let results : NSArray = try managedObjectContext.executeFetchRequest(fetchRequest)
-                print("データの数 = \(results.count)")
-                
-                //managedObjectという変数をダウンキャストしてtodoというものを定義している。
-                //上でresultsを定義している
-    
-                for managedObject in results{
-                    
-                let picture = managedObject as! Picture
-//                print("cameraroll: \(picture.cameraroll), album:\(picture.album)")    //print("cameraroll: \(picture.cameraroll)")
-                }
-            } catch let error1 as NSError {
-                error = error1
-            }
-        
     }
     
-    func imageImport(){
+    func PHAssetForFileURL(url: NSURL) -> PHAsset? {
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        
-        //Entityの操作を制御するmanagedObjectContextをAppdelegateから作成する
-            let managedObjectContext = appDelegate.managedObjectContext
-            
-            //Entityを設定する設定
-            let entityDiscription = NSEntityDescription.entityForName("Picture", inManagedObjectContext: managedObjectContext)
-            
-            
-            let fetchRequest = NSFetchRequest(entityName: "Picture")
-            fetchRequest.entity = entityDiscription
-        
-            
-            do{
-                let fetchResults = try managedObjectContext.executeFetchRequest(fetchRequest) as? [NSManagedObject]
-                
-                //数を取得
-                
-                
-                for managedObject in fetchResults!{
-                    
-                    
-                    
-                    if count1 == 10 {
-                         break
-                    }
-                    
-                    count1++
-                    
-                    let picture = managedObject as! Picture
-                    
-                    
-                    //画像を表示させる
-                    let filePath: String = picture.cameraroll!
-                    print(filePath)
-                    let fileUrl = NSURL(string:filePath)
-                    
-                    //PHAssetUrl取得
-                    PHAssetForFileURL(fileUrl!)
-                
-        
-                    appDelegate.saveContext()
-                }
-                
-                
-            }catch{
-                print("could not catch")
-            }
-        
-    }
-    
-    
-    //PHAssetURLを取得
-    func PHAssetForFileURL(fileUrl: NSURL){
-        
+        //CoreDataから取得した String型からPHAssetを返す
         var imageRequestOptions = PHImageRequestOptions()
         imageRequestOptions.version = .Current
-        imageRequestOptions.deliveryMode = .FastFormat
+        imageRequestOptions.deliveryMode = .HighQualityFormat
         imageRequestOptions.resizeMode = .Fast
         imageRequestOptions.synchronous = true
         
-    
-        
         let fetchResult = PHAsset.fetchAssetsWithOptions(nil)
-        print("fetchResult = \(fetchResult)")
-        
-        
-        //////////////数を呼び込まれる回数に対して、同時に上がっていかないと、画像が変化しない
-        
-        photos.append(fetchResult[count1] as! PHAsset)
-        print("photos = \(photos) + \(count1)")
-       
-//        print("photos = \(photos)")
-//        print("photos.count = \(photos.count)")
-//        
-//        print("fetchResult.count = \(fetchResult.count)")
-        
+        for var index = 0; index < fetchResult.count; index++ {
+            if let asset = fetchResult[index] as? PHAsset {
+                var found = false
+                PHImageManager.defaultManager().requestImageDataForAsset(asset,
+                    options: imageRequestOptions) { (_, _, _, info) in
+                        if let urlkey = info!["PHImageFileURLKey"] as? NSURL {
+                            if urlkey.absoluteString == url.absoluteString {
+                                found = true
+                            }
+                        }
+                }
+                if (found) {
+                    return asset
+                }
+            }
         }
+        
+        return nil
+    }
+
+//    
+//    func imageImport(){
+//        
+//        //画像をString型に変換して、保存
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        
+//        //Entityの操作を制御するmanagedObjectContextをAppdelegateから作成する
+//            let managedObjectContext = appDelegate.managedObjectContext
+//            
+//            //Entityを設定する設定
+//            let entityDiscription = NSEntityDescription.entityForName("Picture", inManagedObjectContext: managedObjectContext)
+//            
+//            
+//            let fetchRequest = NSFetchRequest(entityName: "Picture")
+//            fetchRequest.entity = entityDiscription
+//        
+//            
+//            do{
+//                let fetchResults = try managedObjectContext.executeFetchRequest(fetchRequest) as? [NSManagedObject]
+//                
+//                //数を取得
+//                
+//                
+//                for managedObject in fetchResults!{
+//                    
+//                    if count1 == 10 {
+//                         break
+//                    }
+//                    
+//                    count1++
+//                    
+//                    let picture = managedObject as! Picture
+//                    
+//                    
+//                    //画像を表示させる
+//                    let filePath: String = picture.cameraroll!
+//                    print(filePath)
+//                    let fileUrl = NSURL(string:filePath)
+//                    
+//                  //PHAssetUrl取得
+//                    PHAssetForFileURL(fileUrl!)
+//                
+//                    appDelegate.saveContext()
+//                    
+//                }
+//            
+//            }catch{
+//                print("could not catch")
+//            }
+//        
+//    }
+//    
+//    
+//    //PHAssetURLを取得
+//    func PHAssetForFileURL(fileUrl: NSURL){
+//        
+//        var imageRequestOptions = PHImageRequestOptions()
+//        imageRequestOptions.version = .Current
+//        imageRequestOptions.deliveryMode = .FastFormat
+//        imageRequestOptions.resizeMode = .Fast
+//        imageRequestOptions.synchronous = true
+//    
+//        let fetchResult = PHAsset.fetchAssetsWithOptions(nil)
+//        print("fetchResult = \(fetchResult)")
+//        
+//        //////////////数を呼び込まれる回数に対して、同時に上がっていかないと、画像が変化しない
+//        
+//        photos.append(fetchResult[count1] as! PHAsset)
+//        print("photos = \(photos) + \(count1)")
+//       
+////        print("photos = \(photos)")
+////        print("photos.count = \(photos.count)")
+////        
+////        print("fetchResult.count = \(fetchResult.count)")
+//        
+//        }
+    
     
     func imageViewAppear() {
         //PHAssetをUIImageに変換して、画像の配列を作る
         
-            for (var i = 0;i < 10 ; i++){
-                     
-            let phimgr:PHImageManager = PHImageManager();
+        var count = 0
+        var phimgrCount = 0
+        
+        print("photos.count = \(photos.count)")
+        print("photos = \(photos)　\(count)")
+        print("photos[0]出力 = \(photos[0])")
+        
+        var imageRequestOptions = PHImageRequestOptions()
+        imageRequestOptions.version = .Current
+        imageRequestOptions.deliveryMode = .HighQualityFormat //HighQualityFormatで画像クリーン
+        imageRequestOptions.resizeMode = .Fast
+        imageRequestOptions.synchronous = true
+
+        
+            for (var i = 0;i < photos.count; i++){
+                
+                print(__FUNCTION__)
+                count++
+                print(count)
+            
+            var phimgr:PHImageManager = PHImageManager();
             phimgr.requestImageForAsset(photos[i],
                 targetSize: CGSize(width: 320, height: 320),
-                contentMode: .AspectFill, options: nil) {
+                contentMode: .AspectFill, options: imageRequestOptions) {
                     image, info in
+                    
+                    phimgrCount++
+                    print("phimgrCount = \(phimgrCount)")
+                    
                     //ここでUIImageを取得します。
                     self.photoArray.append(image!)  //UIImageを配列に取得する
                     let urlKey = info!["PHImageFileURLKey"]
-                    print(urlKey)
+                    print("/UrlKey = \(urlKey)")
 //                    print("info = \(info)")
                     if (urlKey == nil){
-                        self.photoURL.append("nil")
-                        print("urlKey == nil")
+                        self.photoURL.append("file:///var/mobile/Media/DCIM/100APPLE/IMG_0244.JPG")
+                        print("//urlKeyがnil")
                     }else{
+                        
                         let strUrl = urlKey!.absoluteString
                         self.photoURL.append(strUrl)
+                        print("urlkey取得")
+                    
+                        self.personInfo[i] = strUrl //辞書の追加
+                        print("personInfo = \(self.personInfo)")
+                        
                     }
                     
                    /////////////////////////nilの時の対処////////////////////////////
                    //最初の10個の配列がnil
                    //photoUrlとphotoArrayのkeyが対応しているか
-                    
-                    print("photoURL = \(self.photoURL)") //nil20個
-                    print("photoURL = \(self.photoURL.count)") //数を取得
+                    print("/photoURL = \(self.photoURL)") //nil10個
+                    print("//photoURL = \(self.photoURL.count)") //数を取得
 //                    print("photoArray.count = \(self.photoArray.count)") //photoarrayの数
     
-                    
             }
-            
         }
     }
-
-
-    
     //=========================Photo=================================================================
     
     
@@ -545,7 +590,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         //画像を生成する
      func create(){
         
-        for (var i = 0;i < hennsuu; i++){
+        for (var i = 0;i < 10; i++){
             let options = MDCSwipeToChooseViewOptions()
             options.delegate = self
             options.likedText = rightSelectPicker //右にスワイプした時に、テキストをを表示
@@ -553,7 +598,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             options.nopeText = leftSelectPicker //左にスワイプした時に、テキスト表示
             options.onPan = { state -> Void in
                 if state.thresholdRatio == 1 && state.direction == MDCSwipeDirection.Left {
-                    print("Photo deleted!")
+                    print(self.leftSelectPicker) //leftSelectPicker出力
                 }
             }
             
@@ -563,12 +608,16 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             
             ////////////////photoArrayとphotoUrlの画像配列/////////////////////////////////
             photoImage = photoArray[i]
-            photoKeys = photoURL[i]
+            photoKeys =  String("\(photoURL[i])")
+            imageUrlAry.append(photoKeys)
             
-            
-            
+            print("photoKeys1 = \(imageUrlAry)") //URLの配列
             
             view.imageView.image = photoImage
+            view.imageView.tag = i
+            self.imageTagAry.append(view.imageView.tag)
+             
+            print(view.imageView.tag)
             
             view.imageView.contentMode = .ScaleAspectFill
             self.view2.addSubview(view)
@@ -582,7 +631,27 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         }
     /////////////右へ割り振った時にパスをつけてコアデータに保存///////////////////////////////////////////////////
     
+//    func getKeys(){
+//        
+//        NSFileManager.defaultManager().
+//        
+//        PHImageManager.defaultManager().requestImageDataForAsset(, options: PHImageRequestOptions(), resultHandler:
+//            {
+//                (imagedata, dataUTI, orientation, info) in
+//                
+//                if (info![NSString(string: "PHImageFileURLKey")] != nil)
+//                {
+//                    var path = info![NSString(string: "PHImageFileURLKey")] as! NSURL
+//                    var strUrl = path.absoluteString
+//                    self.setCameraRoll(strUrl)
+//                    print("strUrl = \(strUrl)")
+//                }
+//        })
+//
+//    }
+    
     func rightRead(){
+        
         //Delegateを読み込む
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
@@ -601,32 +670,28 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         //フェッチリクエスト(データの検索と取得処理の実行)
         do {
-            //Pictureの中の画像の数を抽出
-            //resultsという配列に格納
-            let results : NSArray = try managedObjectContext.executeFetchRequest(fetchRequest)
-            print("データの数 = \(results.count)")
             
-            
-            let predicate = NSPredicate(format: "%K = %@", "cameraroll","file:///var/mobile/Media/DCIM/100APPLE/IMG_0086.PNG")
-            fetchRequest.predicate = predicate
-            
-            print("photoKeys = \(photoKeys)") //全てnil
+            let predicate = NSPredicate(format: "%K = %@", "cameraroll",personInfo[tagCount]!) //PhotoKeysのパスが相違
+            fetchRequest.predicate = predicate //場所を変える
 
-            for managedObject in results{
+            let results : NSArray = try managedObjectContext.executeFetchRequest(fetchRequest)
+                      for managedObject in results{
                 
                 let picture = managedObject as! Picture
                 
                 picture.album = rightSelectPicker
                 print("rightselectPickerString = \(rightSelectPicker)")
+                
+                appDelegate.saveContext()
             
             }
         
         } catch let error1 as NSError {
             error = error1
+        }catch{
+            print("Unknown Error")
         }
-        //データの保存の処理
-        appDelegate.saveContext()
-
+        
     }
     
     func leftRead(){
@@ -648,16 +713,23 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         //フェッチリクエスト(データの検索と取得処理の実行)
         do {
-            //Pictureの中の画像の数を抽出
-            //resultsという配列に格納
+            
+            let predicate = NSPredicate(format: "%K = %@", "cameraroll",personInfo[tagCount]!)
+            
+            fetchRequest.predicate = predicate
+
             let results : NSArray = try managedObjectContext.executeFetchRequest(fetchRequest)
             
-            //データを一件取得する
-            //ここの画像の名前をどうすればいいか
-            let predicate = NSPredicate(format: "%K = %@", "cameraroll","file:///var/mobile/Media/DCIM/100APPLE/IMG_0086.PNG")
-            fetchRequest.predicate = predicate
+            
+            print("データの数 = \(results.count)")
+            print("personInfoの中身 = \(personInfo[tagCount]!)")
+            print("photoURL[0](上と同じならOK) = \(photoURL[0])")
+            //////////////////predicate取得//////////////////////////////////////////////////
             
             print("photoKeys = \(photoKeys)")
+            print("results.count = \(results.count)")
+
+            
             
             for managedObject in results{
                 
@@ -665,29 +737,46 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
 //                picture.album = leftSelectPicker
                 picture.album = leftSelectPicker //名前をselectと一緒にする
                 print("leftselectPickerString = \(leftSelectPicker)")
+                
+                appDelegate.saveContext()
+                
             }
             
         } catch let error1 as NSError {
             error = error1
+        }catch{
+            print("Unknown Error")
         }
-        appDelegate.saveContext()
+        
         
     }
 
-    
-    /////////////左へ割り振った時にパスをつけてコアデータに保存///////////////////////////////////////////////////
-    
-        //左か右のどちらかに傾き切ったら、どちらを選択したのか確定
-        func view(view: UIView, shouldBeChosenWithDirection: MDCSwipeDirection) -> Bool{
+    //左か右のどちらかに傾き切ったら、どちらを選択したのか確定
+    func view(view: UIView, shouldBeChosenWithDirection: MDCSwipeDirection) -> Bool{
+        
+//            var count = -1
             if (shouldBeChosenWithDirection == MDCSwipeDirection.Left) {
                 print("Photo deleted!")
+                //self.view2.view.imageView.tag
+//                count++
+//                self.view2.viewWithTag(count)
+                tagCount++
+                print("tagCount = \(tagCount)")
+                
                 leftRead()
                 
                 return true; //NO
             } else if (shouldBeChosenWithDirection == MDCSwipeDirection.Right){
                 print("Photo saved!")
+//                count++
+//                self.view2.viewWithTag(count
+                print("tagCount = \(tagCount)")
+                tagCount++
                 rightRead()
-                
+                view.tag = self.view2.tag
+                print(self.view.tag)
+//                print(self.view.imageView.tag)
+
 
                 return true; //YES
             } else {
@@ -699,50 +788,33 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
                 return false;
             }
         }
-        
-         //-----------------------------------------------------------------------------------------------
-  
     
     //=========================Collection=============================================================
 
     
     //==================AlertView=============================================================
     func onClickMyButton(sender: UIButton) {
-       
-       
-//        if myButton3.hidden != true{
-//           myButton3.hidden = true
-//           alertMaking()
-//           print("Button")
-//        }else if myUIPicker.hidden != true && myUIPicker2.hidden != true{
-//           myUIPicker.hidden = true
-//           myUIPicker2.hidden = true
-//           alertMaking()
-//           print("UIPIcker")
-//        }else{
-//           alertMaking()
-//          print("else")
-//        }
-                
-//        //MyButtonと同じ作業をして、表示させる
-//        if myButton3.hidden || myUIPicker.hidden || myUIPicker2.hidden{
-//           alertMaking()
-//          print("1回目")
-//        }else{
-//          myButton3.hidden = true
-//          myUIPicker.hidden = true
-//          myUIPicker2.hidden = true
-//          alertMaking()
-//          print("2回目")
-//        }
-        
-        
         alertMaking()
     }
     
-    func alertMaking(){
-    
+    func coreDataCheck() -> Bool {
+        //pickerViewのCoreDataにデータが入ってるかチェック
+        var mydefaults = NSUserDefaults.standardUserDefaults()
         
+        if (mydefaults.objectForKey("coredata") != nil){
+            return false
+        }
+        
+        mydefaults.setObject("flag", forKey: "coredata")
+        
+        mydefaults.synchronize()
+        
+        return true
+    }
+
+    
+    func alertMaking(){
+
         // Alert生成.
         let myAlert: UIAlertController = UIAlertController(title: "新しくアルバムを追加する", message: "Album Name", preferredStyle: UIAlertControllerStyle.Alert)
         
@@ -751,10 +823,11 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             
             for albumname in myAlert.textFields!{
                 print("albumname = \(albumname)")
+                print("myAlert.textFields = \(myAlert.textFields)")
                 let text = albumname.text
                 
                 if (text == "" ){
-                    
+                    //空白だった時の処理
                     self.myButton3.hidden = false
                     
                     let myAlert: UIAlertController = UIAlertController(title: "アルバム名を入力してください", message: "必須項目です", preferredStyle: .Alert)
@@ -774,18 +847,30 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
                     
                 }else{
                     
-                    self.albumTinderAlbum(text!) //tinderalbumに画像を抽出
+                    self.TinderAlbum(text!) //tinderalbumに画像を抽出
                     print("text =  \(text)")
-                    self.myButton3.hidden = false
+                    self.readAlbum()
                     
+                    var mydefaults = NSUserDefaults.standardUserDefaults()
+                    
+                    if (mydefaults.objectForKey("coredata") != nil){
+                        self.myUIPicker.reloadAllComponents() //読み込み直す
+                        self.myUIPicker2.reloadAllComponents()
+                    }else{
+                        self.coreDataCheck()
+                        self.makePicker()
+                        print("1回目")
+                    }
+
                 }
             }
+            
+            
             
         }
         // Cancelアクション生成.
         let CancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Destructive) { (action: UIAlertAction!) -> Void in
             print("Cancel")
-            
             self.view2.addSubview(self.myButton3)
         }
         
@@ -818,7 +903,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     let textField = sender.object as! UITextField
         
         // 入力された文字を表示.
-        print(textField.text)
+        print("textField.text = \(textField.text)")
     }
     
     func readAlbum(){
@@ -843,26 +928,33 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             //Pictureの中の画像の数を抽出
             //resultsという配列に格納
             let results : NSArray = try managedObjectContext.executeFetchRequest(fetchRequest)
-            print("resulsssssssssssデータの数 = \(results.count)")
+            print("resulsデータの数 = \(results.count)")
+            
+            myValues = [] //空にする
             
             //managedObjectという変数をダウンキャストしてtodoというものを定義している。
             //上でresultsを定義している
-            
             for managedObject in results{
                 
                 let album = managedObject as! Albumname
-               
-                myValues.append(album.createAlbum!)
+                
                 print("myValues = \(myValues)")
                 print("albumName: \(album.createAlbum)") //albumname 取得
+               
+                myValues.append(album.createAlbum!)
+                
+                print("myValues = \(myValues)")
+//                print("albumName: \(album.createAlbum)") //albumname 取得
             }
         } catch let error1 as NSError {
             error = error1
+        }catch{
+            print("Unknown Error")
         }
         
     }
     
-    func albumTinderAlbum(text:String){
+    func TinderAlbum(text:String){
         
         //アルバムネームを保存
         //delegateからデータを呼び込むための、定義(get the discription entity name)
@@ -883,8 +975,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         appDelegate.saveContext()
         
-        
-    }
+        }
     
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
@@ -897,7 +988,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
         return myValues.count
-        //CollectinViewの数の分だけ
+
     }
     
     
@@ -927,6 +1018,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
                 self.preSelectedLb.textColor = UIColor.blackColor()
         }
         
+        
         return pickerLabel
     }
     /*
@@ -939,7 +1031,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         // 選択状態のラベルを代入
         self.preSelectedLb = pickerView.viewForRow(row, forComponent: component) as! UILabel
-        // ピッカーのリロードでviewForRowが呼ばれる
+        // ピッカーのリロードでviewForRowが呼pばれる
         pickerView.reloadComponent(component)
         
         if pickerView.tag == 1{
@@ -957,11 +1049,10 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
 //        selectPickerString = myValues[row]
     }
     
-    func onClickOption(sender: UIButton){
+    func makePicker(){
         
         readAlbum()  //albumnameの値を取得
         
-        myButton3.hidden = true //押した瞬間にボタンを隠す
         //-------------------------PickerView------------------------------------------------------
         myUIPicker = UIPickerView()
         
@@ -975,7 +1066,6 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         // DataSourceを設定する.
         myUIPicker.dataSource = self
-        
         
         // Viewに追加する.
         self.view2.addSubview(myUIPicker)
@@ -1004,11 +1094,8 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
             myButton = UIButton()
             
-            // サイズを設定する.
-            //CGRectMake(x,次の始まる視点 y, 横の大きさ, たての大きさ)
-//            myButton.frame = CGRectMake(20, CGFloat(i * 120), 100, 100)
         
-            myButton.frame = CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2, 200, 100)
+            myButton.frame = CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2, 300, 300)
         
             // 背景色を設定する.
             myButton.backgroundColor = UIColor.whiteColor()
@@ -1062,7 +1149,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         //Delegateにデータを追加
         var appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate //AppDelegateのインスタンスを取得
         appDelegate.myValues = myValues //Delegateの変数を代入して表示する
-        print(appDelegate.myValues)
+        print("appDelegate.myValues = \(appDelegate.myValues)")
     }
 ///////////////////////////////////////////FirstView////////////////////////////////////////////////////
     func makeButton(){
@@ -1231,6 +1318,8 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         // イベントを追加する.
         svcBtn2.addTarget(self, action: "upload:", forControlEvents: .TouchUpInside)
         
+        svcBtn2.enabled = false //ボタンを押せないようにする
+        
         // ボタンをViewに追加する.
         self.view1.addSubview(svcBtn2)
         
@@ -1239,13 +1328,12 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         mylabel.textAlignment = NSTextAlignment.Center
         mylabel.font = UIFont(name: "ChalkboardSE-Light", size: 30)!
-        mylabel.text = "Update"
+        mylabel.text = "View Collection" //綺麗な画像を出せるようにする
         mylabel.textColor = UIColor.blackColor()
         
         self.view1.addSubview(mylabel)
         
-        
-    }
+        }
             func makeIndicator(){
         //ボタンを配置
         print("makeingicator")
@@ -1279,9 +1367,10 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     func start(sender:UIButton){
     //画像を読み終わった後に入れる作業
     //この中に新しくボタンを作るメソッドを書く
-        read()        //CoreDataを読み込む
+//        read()        //CoreDataを読み込む
         readAlbum()   //Albumの名前を呼ぶ
-        imageImport() //Photosの配列に URLを入れる
+        newImageImport()
+//        imageImport() //Photosの配列に URLを入れる
         imageViewAppear() // photoArrayグローバル変数に値が指定した繰り返しの数入る
         create() //TinderUIに画像を設置　====完了
         makeColectionViewBtn() //アルバムを表示するボタン作成
@@ -1291,8 +1380,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     
     func upload(sender:UIButton){
      //2回目以降に呼び出される関数
-        
-        
+    
         // 画像をすべて取得
         let assets: PHFetchResult = PHAsset.fetchAssetsWithMediaType(.Image, options: nil)
         assets.enumerateObjectsUsingBlock { (asset, index, stop) -> Void in
@@ -1314,7 +1402,6 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
                         }else{
                         self.setCameraRoll(strUrl)
                         }
-                        print("strUrl = \(strUrl)")
                     }
             })
         }
@@ -1323,8 +1410,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         //Animationを入れるようにする
         vcBtn2.enabled = true //ボタンを触れるようにする
         print("読み込み完了")
-
-       
+        
     }
     
     func onUpdate(sender:NSTimer){
@@ -1357,7 +1443,13 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             howToImageView.duration = 1.5
             howToImageView.animate()
         }else if cnt == 5{
-//            self.scrollView.contentOffset = CGPointMake(0, 0); //scrollViewの位置を初期画面に戻す
+//            self.scrollView.contentOffset = CGPointMake(0, 0); //scrollViewの位置を初期画面に戻す{
+            howToImageView.image = howToImage5
+            howToImageView.animation = "squeezeDown"
+            howToImageView.curve = "easeIn"
+            howToImageView.duration = 1.5
+            howToImageView.animate()  //botannwo6個表示する
+
             timer.invalidate()
             vcBtn.enabled = false
             print("タイマーを止める")

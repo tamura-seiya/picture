@@ -21,6 +21,7 @@ class ThirdViewController: UIViewController, UICollectionViewDelegate, UICollect
     var photosCollectionView: [PHAsset] = []
     
     var imageCollectionView:[UIImage] = []
+    var stringAry :[String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,8 +29,8 @@ class ThirdViewController: UIViewController, UICollectionViewDelegate, UICollect
         print("ThirdViewController")
         
         var appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate //AppDelegateのインスタンスを取得
-        appDelegate.albumCorrect = albumCorrect3
-//        print(albumCorrect3)
+        albumCorrect3 = appDelegate.albumCorrect //初期転換
+        print("albumCorrect3 = \(albumCorrect3)")
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .Vertical
@@ -69,36 +70,92 @@ class ThirdViewController: UIViewController, UICollectionViewDelegate, UICollect
         let fetchRequest = NSFetchRequest(entityName: "Picture")
         fetchRequest.entity = entityDiscription
         
-        
-        
+        //predicateでソートしたい、配列の並列の中身の確認
+        let predicate = NSPredicate(format: "%K = %@", "album",albumCorrect3)
+        fetchRequest.predicate = predicate
+
+        //Predicate問題確定
         do{
             let fetchResults = try managedObjectContext.executeFetchRequest(fetchRequest) as? [NSManagedObject]
+            print("fetchResults.count = \(fetchResults?.count)")
             
-            //アルバムと同じ名前のキーのアルバムを取得
+//            //predicateを外したら、全て取得する
 //            let predicate = NSPredicate(format: "%K = %@", "album",albumCorrect3)
 //            fetchRequest.predicate = predicate
             
-            
+//            for managedObject in fetchResults!{
+//                print("fetchResult[i] as! PHAsset = \(managedObject)")
+//                
+////                let managedObject = fetchResults as! PHAsset
+//                let managedObject = PHAsset.fetchAssetsWithOptions(nil)
+//                
+//                photosCollectionView.append(managedObject as! PHAsset)
+//                print("fetchResult[i] as! PHAsset = \(managedObject)")
+//
+////                picture.album = rightSelectPicker
+////                print("rightselectPickerString = \(rightSelectPicker)")
+//                
+//            }
             for managedObject in fetchResults!{
                 
-                if count2 == 10{
-                    break
-                }
-                count2++
-                
                 let picture = managedObject as! Picture
-                print("Camera: \(picture.cameraroll), Album:\(picture.album)")
-                print("fetchResults?.count = \(fetchResults?.count)")//3016
-                ////////////////Keyがついたパスの取得をして、配列の中にいれる
                 
-                
+                //画像を表示させる
                 let filePath: String = picture.cameraroll!
                 
                 let fileUrl = NSURL(string:filePath)
                 
-                //PHAssetUrl取得
-                PHCollecionViewAssetForFileURL(fileUrl!)
+                var imageData = PHAssetForFileURL(fileUrl!)
+                photosCollectionView.append(imageData!) //Phassetを配列に入れる
+                //            let fetchResult : PHFetchResult = PHAsset.fetchAssetsWithOptions(fetchResults!)
             }
+            
+            
+//            photosCollectionView = [getAssets:fetchMax]
+//            
+//            photosCollectionView =
+//            
+//            let results = PHAsset.
+//            (.Image, options: nil)
+//            var assets: [PHAsset] = []
+//            results.enumerateObjectsUsingBlock { (object, _, _) in
+//                if let asset = object as? PHAsset {
+//                    assets.append(asset)
+//                }
+//            }
+//
+//            //ソートできていない
+//            for (var i = 0; i < 10; i++){ //検出した数の文だけ回す
+//                
+//                let fetchResult = PHAsset.fetchAssetsWithOptions(nil)
+//                
+//                photosCollectionView.append(fetchResult[i] as! PHAsset)
+//                print("fetchResult[i] as! PHAsset = \(fetchResult[i] as! PHAsset)")
+//            
+//            }
+            
+//            for managedObject in fetchResults!{
+//                
+//                                    if count1 == 10 {
+//                                         break
+//                                    }
+//                
+//                                    count1++
+//                
+//                                    let picture = managedObject as! Picture
+//                
+//                
+//                                    //画像を表示させる
+//                                    let filePath: String = picture.cameraroll!
+//                                    print(filePath)
+//                                    let fileUrl = NSURL(string:filePath)
+//                                    
+//                                    //PHAssetUrl取得
+//                                    PHAssetForFileURL(fileUrl!)
+//                                
+//                                    appDelegate.saveContext()
+//            }
+
             
             
         }catch{
@@ -107,37 +164,53 @@ class ThirdViewController: UIViewController, UICollectionViewDelegate, UICollect
         
     }
     
-    
-    //PHAssetURLを取得
-    func PHCollecionViewAssetForFileURL(fileUrl: NSURL){
-        
+    func PHAssetForFileURL(url: NSURL) -> PHAsset? {
         var imageRequestOptions = PHImageRequestOptions()
         imageRequestOptions.version = .Current
-        imageRequestOptions.deliveryMode = .FastFormat
+        imageRequestOptions.deliveryMode = .HighQualityFormat
         imageRequestOptions.resizeMode = .Fast
         imageRequestOptions.synchronous = true
         
-        
-        
         let fetchResult = PHAsset.fetchAssetsWithOptions(nil)
+        for var index = 0; index < fetchResult.count; index++ {
+            if let asset = fetchResult[index] as? PHAsset {
+                var found = false
+                PHImageManager.defaultManager().requestImageDataForAsset(asset,
+                    options: imageRequestOptions) { (_, _, _, info) in
+                        if let urlkey = info!["PHImageFileURLKey"] as? NSURL {
+                            if urlkey.absoluteString == url.absoluteString {
+                                found = true
+                            }
+                        }
+                }
+                if (found) {
+                    return asset
+                }
+            }
+        }
         
-        
-        //////////////数を呼び込まれる回数に対して、同時に上がっていかないと、画像が変化しない
-        
-        photosCollectionView.append(fetchResult[count2] as! PHAsset)
-        
+        return nil
     }
+    
+    
     
     func imageCollectionViewAppear() {
         //PHAssetをUIImageに変換して、画像の配列を作る
         
-        for (var i = 0;i < hennsuu ; i++){
+        var imageRequestOptions = PHImageRequestOptions()
+        imageRequestOptions.version = .Current
+        imageRequestOptions.deliveryMode = .HighQualityFormat
+        imageRequestOptions.resizeMode = .Fast
+        imageRequestOptions.synchronous = true
+
+        
+        for (var i = 0;i < photosCollectionView.count ; i++){
             
             
             let phimgr:PHImageManager = PHImageManager();
             phimgr.requestImageForAsset(photosCollectionView[i],
                 targetSize: CGSize(width: 320, height: 320),
-                contentMode: .AspectFill, options: nil) {
+                contentMode: .AspectFill, options: imageRequestOptions) {
                     image, info in
                     //ここでUIImageを取得します。
                     self.imageCollectionView.append(image!)  //UIImageを配列に取得する
@@ -172,9 +245,7 @@ class ThirdViewController: UIViewController, UICollectionViewDelegate, UICollect
             forIndexPath: indexPath) as! CustomCollectionTableViewCell
 
         // imabeviewを生成 (cgrectmakeで位置とサイズを指定するときにcellを親に考える)
-        
-        
-        
+    
         cell.imgView?.image = imageCollectionView[indexPath.row]
         cell.backgroundColor = UIColor.redColor()
         return cell

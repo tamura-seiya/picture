@@ -8,25 +8,25 @@
 
 import UIKit
 import iAd
+import CoreData
 
 class SecondViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
     var myCollectionView : UICollectionView!
-    var number:UInt32! //乱数を発生させてずらす作業の数
     var myValues2:[String] = []
     var albumCorrect2:String! //画像をソートするときに飛び出される数
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        read()
+        
         var appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate //AppDelegateのインスタンスを取得
         
-        self.myValues2 = appDelegate.myValues
-        self.albumCorrect2 = appDelegate.albumCorrect
+        self.myValues2 = appDelegate.myValues //CollectionViewに表示する文字の配列
         
         print("myValues = \(appDelegate.myValues)")
-        print("myAlbumcorrect = \(albumCorrect2)")
-        
+                
         let layout = UICollectionViewFlowLayout()
             layout.scrollDirection = .Vertical
             layout.minimumInteritemSpacing = 3.0
@@ -38,7 +38,6 @@ class SecondViewController: UIViewController, UICollectionViewDelegate, UICollec
                 // CollectionViewを生成.
             myCollectionView = UICollectionView(frame: CGRectMake(0, 0, view.frame.width, view.frame.height), collectionViewLayout: layout)
         
-                print("layout")
                 // Cellに使われるクラスを登録.
             myCollectionView.registerClass(CustomCollectionViewCell.self, forCellWithReuseIdentifier: "myCell")
         
@@ -80,7 +79,8 @@ class SecondViewController: UIViewController, UICollectionViewDelegate, UICollec
     /*
     Cellの総数を返す
     */
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    {
         return myValues2.count
     }
     
@@ -100,5 +100,51 @@ class SecondViewController: UIViewController, UICollectionViewDelegate, UICollec
         cell.backgroundColor = UIColor.blueColor()
         return cell
     }
+    
+    func read(){
+        //Delegateを読み込む
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        
+        //Entityの操作を制御するmanagedObjectContextをAppdelegateから作成する
+        let managedObjectContext = appDelegate.managedObjectContext
+        
+        //Entityを設定
+        let entityDiscription = NSEntityDescription.entityForName("Picture", inManagedObjectContext: managedObjectContext)
+        
+        let fetchRequest = NSFetchRequest(entityName: "Picture")
+        fetchRequest.entity = entityDiscription
+        
+        //errorが発生した際にキャッチするための変数
+        var error : NSError? = nil
+        
+        //フェッチリクエスト(データの検索と取得処理の実行)
+        do {
+            //Pictureの中の画像の数を抽出
+            //resultsという配列に格納
+            let predicate = NSPredicate(format: "%K = %@", "album","1回目") //PhotoKeysのパスが相違
+            fetchRequest.predicate = predicate //場所を変える
+            
+            
+            let results : NSArray = try managedObjectContext.executeFetchRequest(fetchRequest)
+            print("Album内のデータの数 = \(results.count)")
+            
+            //////////////////predicate取得//////////////////////////////////////////////////
+            
+            for managedObject in results{
+                
+            let picture = managedObject as! Picture
+            print("picture.albumのソートの数 = \(picture.cameraroll)")
+                
+            }
+            
+        } catch let error1 as NSError {
+            error = error1
+        }catch{
+            print("Unknown Error")
+        }
+        
+    }
+    
+
     
 }
