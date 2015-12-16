@@ -10,10 +10,11 @@ import UIKit
 import Photos
 import CoreData
 import iAd
+import MDCSwipeToChoose
+import BubbleTransition
 
 
-class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSource, MDCSwipeToChooseDelegate{
-
+class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSource, MDCSwipeToChooseDelegate,UIViewControllerTransitioningDelegate{
     
     @IBOutlet weak var scrollView: UIScrollView!
     var myLabel:UILabel!
@@ -79,7 +80,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
     var preSelectedLb:UILabel! //labelを表示
     var myValues: [String] = [] //Selectを足すか
     var albumCorrect:String!
-    
+    let transition = BubbleTransition()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -234,7 +235,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
                             var path = info![NSString(string: "PHImageFileURLKey")] as! NSURL
                             var strUrl = path.absoluteString
                             self.setCameraRoll(strUrl)
-                            print("strUrl = \(strUrl)")
+                        
                         }
                 })
                 
@@ -285,6 +286,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             //Todo EntityからObjectを生成し、 Attributesに接続して値を代入
             let picture = managedObject as! Picture
             picture.cameraroll = strUrl
+            picture.album = "First" //First文字列を入れて、二回目以降はそのアルバムを取得する
         
             appDelegate.saveContext()
         
@@ -307,7 +309,9 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         
         do{
-            
+            let predicate = NSPredicate(format: "%K = %@", "album","First") //PhotoKeysのパスが相違
+            fetchRequest.predicate = predicate //場所を変える
+
             let fetchResults = try managedObjectContext.executeFetchRequest(fetchRequest) as? [NSManagedObject]
             
             
@@ -367,8 +371,6 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
 
             for(var i=0 ;i<10; i++){
                 
-                count++
-
                 let picture = fetchResults![i] as! Picture //fetchResultsの中を10件回す
                 print("\(count) picture[fetchResults] = \(picture)")
                 //画像を表示させる
@@ -1095,13 +1097,12 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             myButton = UIButton()
             
         
-            myButton.frame = CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2, 300, 300)
+            myButton.frame = CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2, 150, 150)
         
             // 背景色を設定する.
             myButton.backgroundColor = UIColor.whiteColor()
             
-            // 枠を丸くする.
-            myButton.layer.masksToBounds = true
+        
         
             myButton.layer.position = CGPoint(x: self.view3.frame.size.width / 2,y: self.view3.frame.size.height / 2)
 
@@ -1117,7 +1118,7 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
             myButton.setTitleColor(UIColor.blackColor(), forState: UIControlState.Highlighted)
             
 //            // コーナーの半径を設定する.
-//            myButton.layer.cornerRadius = 20.0
+            myButton.layer.cornerRadius = 75
         
             // タグを設定する.
 //            myButton.tag = i
@@ -1138,12 +1139,31 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         let secondViewcontroller: NavigationController = self.storyboard?.instantiateViewControllerWithIdentifier("secondVC") as! NavigationController
         
         //アニメーション
-        secondViewcontroller.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+        secondViewcontroller.transitioningDelegate = self
+        secondViewcontroller.modalPresentationStyle = .Custom
+        
         
         //modalで遷移する
         self.presentViewController(secondViewcontroller, animated: true, completion:nil)
 
     }
+    
+    
+    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        transition.transitionMode = .Present
+        transition.startingPoint = myButton.center
+        transition.bubbleColor = myButton.backgroundColor!
+        return transition
+    }
+    
+    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        transition.transitionMode = .Dismiss
+        transition.startingPoint = myButton.center
+        transition.bubbleColor = myButton.backgroundColor!
+        
+        return transition
+    }
+
     
     func imageIn(){
         //Delegateにデータを追加
@@ -1457,7 +1477,103 @@ class ViewController: UIViewController,UIPickerViewDelegate, UIPickerViewDataSou
         
         }
         
+    }
+    
+    func upDateTinderView(){
+      //ボタンを作って、そこにまた画像をだせるようにする
+        //画像をString型に変換して、保存したパスをPhotos配列（PHAsset）に落としこむ
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
+        //Entityの操作を制御するmanagedObjectContextをAppdelegateから作成する
+        let managedObjectContext = appDelegate.managedObjectContext
+        
+        //Entityを設定する設定
+        let entityDiscription = NSEntityDescription.entityForName("Picture", inManagedObjectContext: managedObjectContext)
+        
+        
+        let fetchRequest = NSFetchRequest(entityName: "Picture")
+        fetchRequest.entity = entityDiscription
+        
+        
+        do{
+            let predicate = NSPredicate(format: "%K = %@", "album","First") //PhotoKeysのパスが相違
+            fetchRequest.predicate = predicate //場所を変える
+            
+            let fetchResults = try managedObjectContext.executeFetchRequest(fetchRequest) as? [NSManagedObject]
+            
+            
+            //非同期で、10件から30件の画像を表示
+            //            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            //
+            //                for(var i=10 ;i<30; i++){
+            //
+            //                    let picture = fetchResults![i] as! Picture //fetchResultsの中を10件回す
+            //                    //                let picture = managedObject as! Picture
+            //
+            //                    //画像を表示させる
+            //                    let filePath: String = picture.cameraroll!
+            //                    print(filePath)
+            //                    let fileUrl = NSURL(string:filePath)
+            //
+            //
+            //                    var imageRequestOptions = PHImageRequestOptions()
+            //                    imageRequestOptions.version = .Current
+            //                    imageRequestOptions.deliveryMode = .FastFormat
+            //                    imageRequestOptions.resizeMode = .Fast
+            //                    imageRequestOptions.synchronous = true
+            //
+            //                    let fetchResult = PHAsset.fetchAssetsWithOptions(nil)
+            //                    print("fetchResult = \(fetchResult)")
+            //
+            //                    //////////////数を呼び込まれる回数に対して、同時に上がっていかないと、画像が変化しない
+            //
+            //                    self.photos.append(fetchResult[i] as! PHAsset)
+            //                    //fetchResultsの中の数の中を回す
+            //                    //                print("photos = \(photos) + \(count1)")
+            //
+            //                    //        print("photos = \(photos)")
+            //                    //        print("photos.count = \(photos.count)")
+            //                    //
+            //                    //        print("fetchResult.count = \(fetchResult.count)")
+            //
+            //
+            //                    //PHAssetUrl取得
+            //                    //                PHAssetForFileURL(fileUrl!)
+            //
+            //                    appDelegate.saveContext()
+            //                }
+            //
+            //            })
+            //
+            var count = 0
+            
+            //            var imageRequestOptions = PHImageRequestOptions()
+            //            imageRequestOptions.version = .Current
+            //            imageRequestOptions.deliveryMode = .FastFormat
+            //            imageRequestOptions.resizeMode = .Fast
+            //            imageRequestOptions.synchronous = true
+            
+            let fetchResult = PHAsset.fetchAssetsWithOptions(nil)
+            print("fetchResult = \(fetchResult)")
+            
+            for(var i=0 ;i<10; i++){
+                
+                
+                let picture = fetchResults![i] as! Picture //fetchResultsの中を10件回す
+                print("\(count) picture[fetchResults] = \(picture)")
+                //画像を表示させる
+                let filePath: String = picture.cameraroll!
+                print(filePath)
+                let fileUrl = NSURL(string:filePath)
+                var imageData = PHAssetForFileURL(fileUrl!)
+                
+                photos.append(imageData!)
+                
+            }
+            
+        }catch{
+            print("could not catch")
+        }
     }
 
 }

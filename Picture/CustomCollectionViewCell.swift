@@ -10,7 +10,6 @@ import UIKit
 
 class CustomCollectionViewCell : UICollectionViewCell{
     
-    var imgView : UIImageView?
     var textLabel : UILabel?
     
     required init?(coder aDecoder: NSCoder) {
@@ -18,25 +17,16 @@ class CustomCollectionViewCell : UICollectionViewCell{
     }
     
     override init(frame: CGRect) {
-        imgView = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
+    
+        
         
         super.init(frame: frame)
-        // ... and then the rest of the code
-        imgView!.alpha = 0.2
-        imgView?.layer.shouldRasterize = true
-        imgView!.layer.rasterizationScale = 0.6;
-        
-        //丸くする
-        imgView!.layer.cornerRadius = 60
-        imgView!.clipsToBounds = true
-        
-        self.contentView.addSubview(imgView!)
         
         // UILabelを生成
         textLabel = UILabel(frame: CGRectMake(0, 0, frame.width, frame.height))
-        textLabel?.backgroundColor = UIColor.clearColor()
         textLabel?.textAlignment = NSTextAlignment.Center
         textLabel?.font = UIFont(name: "ChalkboardSE-Light", size: 24)
+        textLabel?.textColor = UIColor.whiteColor()
         //ArialHebrew AvenirNext-UltraLightItalic ChalkboardSE-Bold ChalkboardSE-Light Cochin Cochin-Italic
         //Courier
         
@@ -45,6 +35,7 @@ class CustomCollectionViewCell : UICollectionViewCell{
         
     }
     
+        
     
     
     

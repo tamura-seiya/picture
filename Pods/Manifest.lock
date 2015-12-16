@@ -1,10 +1,13 @@
 PODS:
+  - BubbleTransition (1.0.1)
   - MDCSwipeToChoose (0.2.3)
 
 DEPENDENCIES:
+  - BubbleTransition (~> 1.0.0)
   - MDCSwipeToChoose
 
 SPEC CHECKSUMS:
+  BubbleTransition: 76d5e306dbda0f622260ea7d082c971d976422ab
   MDCSwipeToChoose: 56239d98b4558c66e7c3c9069482befd26092270
 
 COCOAPODS: 0.39.0

@@ -15,9 +15,18 @@ class SecondViewController: UIViewController, UICollectionViewDelegate, UICollec
     var myCollectionView : UICollectionView!
     var myValues2:[String] = []
     var albumCorrect2:String! //画像をソートするときに飛び出される数
-    
-    override func viewDidLoad() {
+    let pastel1 = UIColor(red: 92.0/255.0, green: 254.0/255.0, blue: 238.0/255.0, alpha: 1.0)
+    let pastel2 = UIColor(red: 92.0/255.0, green: 249.0/255.0, blue:222.0/255.0, alpha: 1.0)
+    let pastel3 = UIColor(red: 96.0/255.0, green: 243.0/255.0, blue: 204.0/255.0, alpha: 1.0)
+    let pastel4 = UIColor(red: 100.0/255.0, green: 236.0/255.0, blue: 183.0/255.0, alpha: 1.0)
+    let pastel5 = UIColor(red: 103.0/255.0, green: 228.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+    let pastel6 = UIColor(red: 105.0/255.0, green: 220.0/255.0, blue: 138.0/255.0, alpha: 1.0)
+    var pastelBook:[UIColor] = []
+
+       override func viewDidLoad() {
         super.viewDidLoad()
+        
+        pastelBook = [pastel1,pastel2,pastel3,pastel4,pastel5,pastel6]
         
         read()
         
@@ -33,12 +42,11 @@ class SecondViewController: UIViewController, UICollectionViewDelegate, UICollec
             layout.minimumLineSpacing = 5.0
             layout.itemSize = CGSizeMake(self.view.frame.width / 2 - 10, self.view.frame.height / 3 - 10)
             layout.sectionInset = UIEdgeInsetsMake(20, 5, 10, 5)
-        
-        
-                // CollectionViewを生成.
+    
+            // CollectionViewを生成.
             myCollectionView = UICollectionView(frame: CGRectMake(0, 0, view.frame.width, view.frame.height), collectionViewLayout: layout)
         
-                // Cellに使われるクラスを登録.
+            // Cellに使われるクラスを登録.
             myCollectionView.registerClass(CustomCollectionViewCell.self, forCellWithReuseIdentifier: "myCell")
         
             myCollectionView.delegate = self
@@ -76,30 +84,34 @@ class SecondViewController: UIViewController, UICollectionViewDelegate, UICollec
 
     }
     
-    /*
-    Cellの総数を返す
-    */
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         return myValues2.count
     }
     
-    
-    
-    /*
-    Cellに値を設定する
-    */
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell : CustomCollectionViewCell = collectionView.dequeueReusableCellWithReuseIdentifier("myCell",
             forIndexPath: indexPath) as! CustomCollectionViewCell
         
-        //myValuesの画像のテキストを貼りつける
+
         cell.textLabel?.text = myValues2[indexPath.row]
-        
-        cell.backgroundColor = UIColor.blueColor()
+        cell.textLabel?.textColor = UIColorFromRGB(0x209624)
+        cell.textLabel?.backgroundColor = pastelBook[indexPath.row]
+        pastelBook.append(pastelBook[indexPath.row])
+
         return cell
     }
+    
+    func UIColorFromRGB(rgbValue: UInt) -> UIColor {
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
+    }
+   
     
     func read(){
         //Delegateを読み込む
